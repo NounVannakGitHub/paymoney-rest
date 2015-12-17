@@ -58,6 +58,34 @@ public class User {
 	private String lname;
 	private String mobile;
 	private int userType;
+	private String url;
+	private int delete;
+
+	public int getDelete() {
+		return delete;
+	}
+
+	public void setDelete(int delete) {
+		this.delete = delete;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	private String token;
 
 	public int getUserType() {
 		return userType;
@@ -108,12 +136,20 @@ public class User {
 		this.signUpDate = signUpDate;
 	}
 
-	public User(String email, String password, int userType, int active, int newsLetters) {
+	public User(String email, String password, int userType, int active, int newsLetters, int delete) {
 		this.email = email;
 		this.password = password;
 		this.userType = userType;
 		this.active = active;
 		this.newsLetters = newsLetters;
+		this.delete = delete;
+	}
+
+	public User(String email, String password, String url, String token) {
+		this.email = email;
+		this.password = password;
+		this.url = url;
+		this.token = token;
 	}
 
 }

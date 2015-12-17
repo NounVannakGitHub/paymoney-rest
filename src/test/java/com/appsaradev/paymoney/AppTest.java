@@ -2,6 +2,9 @@ package com.appsaradev.paymoney;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import com.appsaradev.paymoney.account.auth.Verify;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -36,5 +39,9 @@ public class AppTest extends TestCase {
 
 	public void testConnection() {
 		Connection connection = com.appsaradev.paymoney.singleton.Connection.getSingleConnection();
+	}
+
+	public void testRandom() {
+		System.out.println(Verify.doGenerateSecurityCode());
 	}
 }

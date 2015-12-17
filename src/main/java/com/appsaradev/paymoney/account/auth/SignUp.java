@@ -5,7 +5,7 @@ import com.appsaradev.paymoney.account.database.DatabaseProcess;
 
 public class SignUp {
 
-	private DatabaseProcess process = new DatabaseProcess();
+	private static DatabaseProcess process = new DatabaseProcess();
 
 	private Verify verify;
 
@@ -27,7 +27,7 @@ public class SignUp {
 
 	private API api;
 
-	public void doCreateUser(User user) {
+	public static void doCreateUser(User user) {
 		process.setUser(user);
 		if (user.getUserType() == 1) {
 			process.doInsert(DatabaseProcess.USER, DatabaseProcess.F_USER, process.D_USER);
