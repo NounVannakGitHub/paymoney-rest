@@ -1,6 +1,7 @@
 package com.appsaradev.paymoney.account.utils;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import com.appsaradev.paymoney.account.dao.User;
@@ -13,6 +14,16 @@ import com.sun.jersey.core.util.Base64;
 
 public class Utils {
 	private static final String API_KEY = "b_PGUCOWpE_JzDvGmyW-9A";
+
+	private static String error;
+
+	public static String getError() {
+		return error;
+	}
+
+	public static void setError(String errors) {
+		error = errors;
+	}
 
 	public static String encodedBase64(String uuid) {
 		return new String(Base64.encode(uuid));
@@ -47,6 +58,13 @@ public class Utils {
 		} catch (IOException e) {
 			System.out.println("sendEmail(IOException): " + e.getMessage());
 		}
+	}
+
+	public static String getCurrentTime() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		java.util.Date date = new java.util.Date();
+		String strDate = format.format(date);
+		return strDate;
 	}
 
 }

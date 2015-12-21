@@ -7,10 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.appsaradev.paymoney.account.dao.User;
+import com.google.common.util.concurrent.Service.State;
 
 public class DatabaseProcess {
 
-	Connection connection = com.appsaradev.paymoney.singleton.Connection.getSingleConnection();
+	static Connection connection = com.appsaradev.paymoney.singleton.Connection.getSingleConnection();
 	public static final String USER = "pm_user";
 	public static final String ACCOUNT = "pm_account";
 	public static final String BUSSINESS = "pm_business_account";
@@ -40,7 +41,7 @@ public class DatabaseProcess {
 	public final String D_BUSINESS = "'" + this.getUser().getEmail() + "','" + this.getUser().getPassword() + "','"
 			+ this.getUser().getUrl() + "','" + this.getUser().getToken() + "'";
 
-	public void doInsert(String table, String dbFields, String data) {
+	public static void doInsert(String table, String dbFields, String data) {
 
 		String sql = "insert into '" + table + "' ('" + dbFields + "') values ('" + data + "')";
 		try {
@@ -54,7 +55,20 @@ public class DatabaseProcess {
 		}
 	}
 
-	public boolean isCheck(String sql) {
+	public static void insert(String sql) {
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("inserted");
+		} catch (Exception e) {
+			System.out.println("insert: " + e.getMessage());
+		}
+
+	}
+
+	public static boolean isCheck(String sql) {
 		boolean check = false;
 		try {
 			connection.setAutoCommit(false);
@@ -71,7 +85,24 @@ public class DatabaseProcess {
 		return check;
 	}
 
-	public void doUpdate(String sql) {
+	public static double checkCash(String sql) {
+		double cash = 0;
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				cash = resultSet.getDouble(1);
+				System.out.println("User cash: " + cash);
+				connection.commit();
+			}
+		} catch (Exception e) {
+			System.out.println("checkCash: " + e.getMessage());
+		}
+		return cash;
+	}
+
+	public static void doUpdate(String sql) {
 		try {
 			connection.setAutoCommit(false);
 			Statement statement = connection.createStatement();
@@ -86,7 +117,7 @@ public class DatabaseProcess {
 
 	}
 
-	public List<String> getListEmail(String sql) {
+	public static List<String> getListEmail(String sql) {
 		List<String> listEmail = new ArrayList<String>();
 		try {
 			connection.setAutoCommit(false);
@@ -100,6 +131,23 @@ public class DatabaseProcess {
 		}
 
 		return listEmail;
+	}
+
+	public static List<String> getDBValue(String sql, int index) {
+		List<String> account = new ArrayList<String>();
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				for (int i = 0; i < index; i++) {
+					account.add(i, resultSet.getObject(i + 1).toString());
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("getDBValue: " + e.getMessage());
+		}
+		return account;
 	}
 
 	public List<Object> getAccountInfo(String sql) {

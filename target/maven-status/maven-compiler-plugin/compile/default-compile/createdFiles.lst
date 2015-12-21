@@ -5,11 +5,13 @@ com\appsaradev\paymoney\PayMoneyConfiguration.class
 com\appsaradev\paymoney\health\TemplateHealthCheck.class
 com\appsaradev\paymoney\account\topup\ScratchCard.class
 com\appsaradev\paymoney\core\Saying.class
+com\appsaradev\paymoney\account\history\History.class
 com\appsaradev\paymoney\account\payment\Payment.class
 com\appsaradev\paymoney\App.class
 com\appsaradev\paymoney\account\transfer\Transfer.class
 com\appsaradev\paymoney\account\dao\User.class
 com\appsaradev\paymoney\PayMoneyApplication.class
+com\appsaradev\paymoney\account\status\Status.class
 com\appsaradev\paymoney\account\auth\Verify.class
 com\appsaradev\paymoney\account\utils\Utils.class
 com\appsaradev\paymoney\account\auth\SignIn.class

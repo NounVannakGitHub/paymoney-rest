@@ -3,7 +3,9 @@ package com.appsaradev.paymoney;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import com.appsaradev.paymoney.account.auth.SignIn;
 import com.appsaradev.paymoney.account.auth.Verify;
+import com.appsaradev.paymoney.account.transfer.Transfer;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -43,5 +45,12 @@ public class AppTest extends TestCase {
 
 	public void testRandom() {
 		System.out.println(Verify.doGenerateSecurityCode());
+	}
+	public void testLogin(){
+		System.out.println(SignIn.isLogin("vann", "38dsiiw84"));
+	}
+	
+	public void testCashToRecievier(){
+		Transfer.setCashToReciever("rete", "hjfklshfks", 258.6);
 	}
 }
