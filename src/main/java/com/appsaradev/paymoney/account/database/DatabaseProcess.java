@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.appsaradev.paymoney.account.dao.User;
-import com.google.common.util.concurrent.Service.State;
+import com.appsaradev.paymoney.account.utils.Utils;
+import com.sun.xml.ws.developer.StatefulWebServiceManager;
 
 public class DatabaseProcess {
 
@@ -25,25 +26,76 @@ public class DatabaseProcess {
 		return user;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUser(User users) {
+		this.user = users;
 	}
 
-	public final String D_USER = "'" + this.getUser().getEmail() + "','" + this.getUser().getPassword() + "','"
-			+ this.getUser().getUserType() + "','" + this.getUser().getActive() + "','"
-			+ this.getUser().getNewsLetters() + "','" + this.getUser().getDelete() + "'";
+	public static final String D_USER = "USER";
 
-	public final String D_ACCOUNT = "'" + this.getUser().getEmail() + "','" + this.getUser().getrEmail() + "','"
-			+ this.getUser().getPassword() + "','" + this.getUser().getFname() + "','" + this.getUser().getLname()
-			+ "','" + this.getUser().getMobile() + "','" + this.getUser().getUserType() + "','"
-			+ this.getUser().getSignUpDate() + "'";
+	public static final String D_ACCOUNT = "ACCOUNT";
 
-	public final String D_BUSINESS = "'" + this.getUser().getEmail() + "','" + this.getUser().getPassword() + "','"
-			+ this.getUser().getUrl() + "','" + this.getUser().getToken() + "'";
+	public static final String D_BUSINESS = "BUSSINESS";
+
+	public static void doInsert(String table, String dbFields, String data, User user) {
+		String myData = "";
+		if (data.equals("USER")) {
+			myData = "'" + user.getEmail() + "','" + user.getPassword() + "','" + user.getUserType() + "','"
+					+ user.getActive() + "','" + user.getNewsLetters() + "','" + user.getDelete() + "'";
+		} else if (data.equals("ACCOUNT")) {
+			myData = "'" + user.getEmail() + "','" + user.getrEmail() + "','" + user.getPassword() + "','"
+					+ user.getFname() + "','" + user.getLname() + "','" + user.getMobile() + "','" + user.getUserType()
+					+ "','" + user.getSignUpDate() + "'";
+		} else {
+			myData = "'" + user.getEmail() + "','" + user.getPassword() + "','" + user.getUrl() + "','"
+					+ user.getToken() + "'";
+		}
+
+		String sql = "insert into '" + table + "' ('" + dbFields + "') values ('" + myData + "')";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			System.out.println("Data was inserted!");
+			connection.commit();
+		} catch (Exception e) {
+			System.out.println("doInsert: " + e.getMessage());
+		}
+	}
+
+	public static void insertUser(User user) {
+		String sql = "insert into pm_user (user_email,user_password,user_usertype,user_active,user_newsletter,user_delete) values ('"
+				+ user.getEmail() + "','" + Utils.encodedBase64(user.getPassword()) + "','" + user.getUserType() + "','"
+				+ user.getActive() + "','" + user.getNewsLetters() + "','" + user.getDelete() + "')";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			System.out.println("Data was inserted!");
+			connection.commit();
+		} catch (Exception e) {
+			System.out.println("insertUser: " + e.getMessage());
+		}
+	}
+
+	public static void insertAccount(User user) {
+		String sql = "insert into pm_account (ac_email,ac_reemail,ac_password,ac_fname,ac_lname,ac_mobile,ac_usertype,ac_datesignup) values ('"
+				+ user.getEmail() + "','" + user.getrEmail() + "','" + Utils.encodedBase64(user.getPassword()) + "','"
+				+ user.getFname() + "','" + user.getLname() + "','" + user.getMobile() + "','" + user.getUserType()
+				+ "','" + user.getSignUpDate() + "')";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("account inserted!");
+		} catch (Exception e) {
+			System.out.println("insertAccount: " + e.getMessage());
+		}
+
+	}
 
 	public static void doInsert(String table, String dbFields, String data) {
-
-		String sql = "insert into '" + table + "' ('" + dbFields + "') values ('" + data + "')";
+		String sql = "insert into " + table + " ('" + dbFields + "') values ('" + data + "')";
 		try {
 			connection.setAutoCommit(false);
 			Statement statement = connection.createStatement();
@@ -166,6 +218,24 @@ public class DatabaseProcess {
 		}
 
 		return account;
+	}
+
+	public static double getScratchCard(String digits) {
+		double cash = 0.0;
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement
+					.executeQuery("select sc_cash from pm_scractch_card where sc_digits='" + digits + "'");
+			while (resultSet.next()) {
+				cash = resultSet.getDouble(1);
+			}
+			System.out.println("cash: " + cash);
+		} catch (Exception e) {
+			System.out.println("getScratchCard: " + e.getMessage());
+		}
+
+		return cash;
 	}
 
 }

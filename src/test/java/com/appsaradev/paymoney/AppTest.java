@@ -47,10 +47,10 @@ public class AppTest extends TestCase {
 		System.out.println(Verify.doGenerateSecurityCode());
 	}
 	public void testLogin(){
-		System.out.println(SignIn.isLogin("vann", "38dsiiw84"));
+		//System.out.println(SignIn.isLogin("vann", "38dsiiw84"));
 	}
 	
 	public void testCashToRecievier(){
-		Transfer.setCashToReciever("rete", "hjfklshfks", 258.6);
+		//Transfer.setCashToReciever("rete", "hjfklshfks", 258.6);
 	}
 }

@@ -21,4 +21,9 @@ public class History {
 
 	}
 
+	public static void setScratchCardHistory(String email, double cash, String digits, String date) {
+		DatabaseProcess.doInsert("pm_scratch_card_history", "sh_email,sh_digits,sh_cash,sh_date",
+				"'" + email + "','" + digits + "','" + cash + "','" + date + "'");
+	}
+
 }

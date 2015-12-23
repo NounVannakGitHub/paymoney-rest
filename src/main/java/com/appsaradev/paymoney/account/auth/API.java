@@ -6,11 +6,9 @@ import com.appsaradev.paymoney.account.utils.Utils;
 
 public class API {
 
-	private static DatabaseProcess process = new DatabaseProcess();
-
 	public static void doCreateAPI(User user) {
-		process.setUser(user);
-		process.doInsert(DatabaseProcess.BUSSINESS, DatabaseProcess.F_BUSINESS, process.D_BUSINESS);
+		DatabaseProcess.doInsert(DatabaseProcess.BUSSINESS, DatabaseProcess.F_BUSINESS, DatabaseProcess.D_BUSINESS,
+				user);
 	}
 
 	public static String doGenerateToken(User user) {

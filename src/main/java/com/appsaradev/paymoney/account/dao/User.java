@@ -145,6 +145,21 @@ public class User {
 		this.delete = delete;
 	}
 
+	public User(String email, String rEmail, String password, String fname, String lname, String mobile, int userType,
+			int active, int newsLetters, int delete, String signUpDate) {
+		this.email = email;
+		this.rEmail = rEmail;
+		this.password = password;
+		this.fname = fname;
+		this.lname = lname;
+		this.mobile = mobile;
+		this.userType = userType;
+		this.signUpDate = signUpDate;
+		this.active = active;
+		this.newsLetters = newsLetters;
+		this.delete = delete;
+	}
+
 	public User(String email, String password, String url, String token) {
 		this.email = email;
 		this.password = password;
