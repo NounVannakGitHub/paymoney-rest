@@ -8,6 +8,7 @@ import com.appsaradev.paymoney.resource.PayMoneyResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.jersey.sessions.HttpSessionProvider;
+import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
@@ -33,7 +34,7 @@ public class PayMoneyApplication extends Application<PayMoneyConfiguration> {
 		environment.servlets().setSessionHandler(new SessionHandler());
 
 		// run assets resource
-		environment.jersey().setUrlPattern("/paymoney/*");
+		environment.jersey().setUrlPattern("/rest/*");
 	}
 
 }

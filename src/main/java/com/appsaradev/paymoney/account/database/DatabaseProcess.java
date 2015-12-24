@@ -6,6 +6,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.appsaradev.paymoney.account.dao.MandatCashDao;
 import com.appsaradev.paymoney.account.dao.User;
 import com.appsaradev.paymoney.account.utils.Utils;
 import com.sun.xml.ws.developer.StatefulWebServiceManager;
@@ -137,8 +138,9 @@ public class DatabaseProcess {
 		return check;
 	}
 
-	public static double checkCash(String sql) {
+	public static double checkCash(String email) {
 		double cash = 0;
+		String sql = "select cs_cash from pm_cash where cs_email='" + email + "'";
 		try {
 			connection.setAutoCommit(false);
 			Statement statement = connection.createStatement();
@@ -222,11 +224,11 @@ public class DatabaseProcess {
 
 	public static double getScratchCard(String digits) {
 		double cash = 0.0;
+		String sql = "select sc_cash from pm_scractch_card where sc_digits='" + digits + "'";
 		try {
 			connection.setAutoCommit(false);
 			Statement statement = connection.createStatement();
-			ResultSet resultSet = statement
-					.executeQuery("select sc_cash from pm_scractch_card where sc_digits='" + digits + "'");
+			ResultSet resultSet = statement.executeQuery(sql);
 			while (resultSet.next()) {
 				cash = resultSet.getDouble(1);
 			}
@@ -236,6 +238,244 @@ public class DatabaseProcess {
 		}
 
 		return cash;
+	}
+
+	public static boolean isMandatCash(String digits) {
+		boolean cash = false;
+		String sql = "select * from pm_mandat_cash where mc_digit='" + digits + "' and mc_used=0";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			if (resultSet.next()) {
+				cash = true;
+			}
+			System.out.println("cash: " + cash);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("isMandatCash:" + e.getMessage());
+		}
+		return cash;
+	}
+
+	public static double getMandatCash(String digits) {
+		double cash = 0.0;
+		String sql = "select mc_cash from pm_mandat_cash where mc_digits='" + digits + "'";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				cash = resultSet.getDouble(1);
+				System.out.println("cash :" + cash);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("getMandatCash: " + e.getMessage());
+		}
+		return cash;
+	}
+
+	public static void insertMandatCash(MandatCashDao dao) {
+		String sql = "insert into pm_mandat_cash (mc_digits,mc_cash,mc_serial,mc_email,mc_used) values ('"
+				+ dao.getDigits() + "','" + dao.getCash() + "','" + dao.getSerial() + "','" + dao.getEmail() + "','"
+				+ dao.getUsed() + "')";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("insertMandatCash success");
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("insertMandatCash: " + e.getMessage());
+		}
+
+	}
+
+	public static void updateCashUser(String email, double cash) {
+		String sql = "update pm_cash set cs_cash='" + cash + "' where cs_email='" + email + "'";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("cash user updated");
+		} catch (Exception e) {
+			System.out.println("updateCashUser: " + e.getMessage());
+			// TODO: handle exception
+		}
+
+	}
+
+	public static void updateMandatCash(String digits) {
+		String sql = "update pm_mandat_cash set mc_used=1 where mc_digits='" + digits + "'";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("updateMandatCash Inserted!");
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("updateMandatCash: " + e.getMessage());
+		}
+
+	}
+
+	public static void insertMandatCashHistory(String email, String digits, double cash, String date, String action) {
+		String sql = "insert into pm_mandat_cash_history (mh_email,mh_digits,mh_cash,mh_date,mh_action) values ('"
+				+ email + "','" + digits + "','" + cash + "','" + date + "','" + action + "')";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("insertMandatCashHistory inserted!");
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("insertMandatCashHistory: " + e.getMessage());
+		}
+	}
+
+	public static boolean isScratchCard(String digits) {
+		boolean cash = false;
+		String sql = "select * from pm_scratch_card where sc_digits='" + digits + "' and sc_used=0";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			if (resultSet.next()) {
+				cash = true;
+				System.out.println("isScratchCard: " + cash);
+			}
+			connection.commit();
+		} catch (Exception e) {
+			System.out.println("isScratchCard: " + e.getMessage());
+			// TODO: handle exception
+		}
+		return cash;
+
+	}
+
+	public static void updateScratchCardDB(String digits) {
+		String sql = "update pm_scratch_card set sc_used=1 where sc_digits='" + digits + "'";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("updateScratchCardDB inserted");
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("upddateScratchCardDB: " + e.getMessage());
+		}
+
+	}
+
+	public static void insertTopupHistory(String email, double cash, String topuptype, String date) {
+		String sql = "insert into pm_topup_history (th_email,th_cash,th_topup_type,th_date) values ('" + email + "','"
+				+ cash + "','" + topuptype + "','" + date + "')";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("insertTopupHistory inserted");
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("insertTopupHistory: " + e.getMessage());
+		}
+	}
+
+	public static List<String> getTopupHistory(String email) {
+		List<String> topup = new ArrayList<String>();
+		String sql = "select * from pm_topup_history where th_email='" + email + "'";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				for (int i = 0; i < 4; i++) {
+					topup.add(i, resultSet.getObject(i + 1).toString());
+				}
+			}
+			connection.commit();
+			System.out.println("getTopupHistory completed");
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("getTopupHistory: " + e.getMessage());
+		}
+		return topup;
+	}
+
+	public static boolean isCheckSenderAndReciever(String email) {
+		boolean user = false;
+		String sql = "select * from pm_user where user_email='" + email + "' and user_active=1";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			if (resultSet.next()) {
+				user = true;
+				System.out.println("isCheckSenderAndReciever: " + user);
+			}
+			connection.commit();
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("isCheckSenderAndReciever: " + e.getMessage());
+		}
+		return user;
+	}
+
+	public static void insertTransferNotification(String sender, String reciever, double cash, String date) {
+		String sql = "insert into pm_transfer_notification (tn_sender,tn_reciever,tn_cash,tn_date,tn_read) values ('"
+				+ sender + "','" + reciever + "','" + cash + "','" + date + "',0)";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("insertTransferNotification inserted");
+		} catch (Exception e) {
+			System.out.println("insertTransferNotification: " + e.getMessage());
+			// TODO: handle exception
+		}
+	}
+
+	public static void updateReadNotification(int id) {
+		String sql = "update pm_transfer_notification set tn_read=1 where tn_id='" + id + "'";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("updateReadNotification updated");
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("updateReadNotification: " + e.getMessage());
+		}
+
+	}
+
+	public static List<String> selectTransferNotification(String email) {
+		List<String> notification = new ArrayList<String>();
+		String sql = "select * from pm_transfer_notification where tn_email='" + email + "' and tn_read=0";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				for (int i = 0; i < 6; i++) {
+					notification.add(i, resultSet.getObject(i + 1).toString());
+				}
+			}
+			System.out.println("selectTransferNotification success");
+		} catch (Exception e) {
+			System.out.println("selectTransferNotification: " + e.getMessage());
+		}
+
+		return notification;
 	}
 
 }

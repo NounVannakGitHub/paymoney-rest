@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import com.appsaradev.paymoney.account.auth.SignUp;
+import com.appsaradev.paymoney.account.auth.Verify;
 import com.appsaradev.paymoney.account.dao.User;
 import com.appsaradev.paymoney.account.utils.Utils;
 
@@ -46,19 +47,16 @@ public class PayMoneyResource {
 				Utils.getCurrentTime());
 		SignUp.doCreateUser(user);
 		Utils.sendEmail("Verify New Pay Money Account", user);
-		URI uri = UriBuilder.fromUri("").build();
+		URI uri = UriBuilder.fromUri("/assets/notice.html").build();
 		return Response.seeOther(uri).build();
 	}
 
 	@GET
 	@Path("/createuser/verify")
 	public Response verify(@QueryParam("token") String token) {
-
 		String email = Utils.decodedBase64(token);
-
 		System.out.println(email);
-
-		URI uri = UriBuilder.fromUri("").build();
+		URI uri = UriBuilder.fromUri("/").build();
 		return Response.seeOther(uri).build();
 	}
 

@@ -1,5 +1,7 @@
 package com.appsaradev.paymoney.account.history;
 
+import java.util.List;
+
 import com.appsaradev.paymoney.account.database.DatabaseProcess;
 
 public class History {
@@ -24,6 +26,10 @@ public class History {
 	public static void setScratchCardHistory(String email, double cash, String digits, String date) {
 		DatabaseProcess.doInsert("pm_scratch_card_history", "sh_email,sh_digits,sh_cash,sh_date",
 				"'" + email + "','" + digits + "','" + cash + "','" + date + "'");
+	}
+
+	public static List<String> getTopupHistory(String email) {
+		return DatabaseProcess.getTopupHistory(email);
 	}
 
 }

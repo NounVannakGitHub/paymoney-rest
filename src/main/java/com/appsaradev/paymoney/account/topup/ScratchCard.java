@@ -5,36 +5,44 @@ import com.appsaradev.paymoney.account.history.History;
 import com.appsaradev.paymoney.account.utils.Utils;
 
 public class ScratchCard {
-	private static String emials;
-	private static double cashs;
-
-	public static boolean isCheck14Digits(String digits) {
-		return DatabaseProcess.isCheck("select * from pm_scratch_card where sc_digits='" + digits + "'");
+	private static boolean isCheck14Digits(String digits) {
+		return DatabaseProcess.isScratchCard(digits);
 	}
 
-	public static double getCash(String digits) {
+	private static double getCash(String digits) {
 		return DatabaseProcess.getScratchCard(digits);
 	}
 
 	private static void updateCashUser(String email, double cash) {
-		DatabaseProcess.doUpdate("update pm_cash set cs_cash='" + cash + "' where cs_email='" + email + "'");
+		DatabaseProcess.updateCashUser(email, cash);
+		updateCash(email, cash);
 	}
 
 	private static double doCheckCash(String email) {
-		return DatabaseProcess.checkCash("select cs_cash from pm_cash where cs_email='" + email + "'");
+		return DatabaseProcess.checkCash(email);
 	}
 
-	public static void updateCash(String email, double cash) {
-		emials = email;
-		cashs = cash;
+	private static void updateCash(String email, double cash) {
 		double recieverCash = (doCheckCash(email) + cash);
 		updateCashUser(email, recieverCash);
 		History.setCashHistory(email, recieverCash, Utils.getCurrentTime());
 	}
 
-	public static void updateScratchCardDB(String digits) {
-		DatabaseProcess.doUpdate("update pm_scratch_card set sc_used=1 where cs_digits='" + digits + "'");
-		History.setScratchCardHistory(emials, cashs, digits, Utils.getCurrentTime());
+	private static void updateScratchCardDB(String digits) {
+		DatabaseProcess.updateScratchCardDB(digits);
+	}
+
+	public static void topupScratchCard(String digits, String email) {
+		double cash = getCash(digits);
+		if (isCheck14Digits(digits) == true) {
+			updateCashUser(email, cash);
+			updateScratchCardDB(digits);
+			DatabaseProcess.insertTopupHistory(email, cash, "Scratch Card", Utils.getCurrentTime());
+			History.setScratchCardHistory(email, cash, digits, Utils.getCurrentTime());
+		} else {
+			Utils.setError("wrong digits number");
+		}
+
 	}
 
 }
