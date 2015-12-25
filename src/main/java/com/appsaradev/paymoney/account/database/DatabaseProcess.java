@@ -224,7 +224,7 @@ public class DatabaseProcess {
 
 	public static double getScratchCard(String digits) {
 		double cash = 0.0;
-		String sql = "select sc_cash from pm_scractch_card where sc_digits='" + digits + "'";
+		String sql = "select sc_cash from pm_scratch_card where sc_digits='" + digits + "'";
 		try {
 			connection.setAutoCommit(false);
 			Statement statement = connection.createStatement();
@@ -304,6 +304,77 @@ public class DatabaseProcess {
 		} catch (Exception e) {
 			System.out.println("updateCashUser: " + e.getMessage());
 			// TODO: handle exception
+		}
+
+	}
+
+	public static void insertCashUser(String email, double cash) {
+		String sql = "insert into pm_cash (cs_email,cs_cash) values ('" + email + "','" + cash + "')";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("insertCashUser inserted");
+		} catch (Exception e) {
+			System.out.println("insertCashUser: " + e.getMessage());
+		}
+
+	}
+
+	public static void insertCashHistory(String email, double cash, String date) {
+		String sql = "insert into pm_cash_history (ch_email,ch_cash,ch_date) values ('" + email + "','" + cash + "','"
+				+ date + "')";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("insertCashHistory inserted");
+		} catch (Exception e) {
+			System.out.println("insertCashHistory: " + e.getMessage());
+		}
+	}
+
+	public static void insertScratchCardHistory(String email, String digits, double cash, String date) {
+		String sql = "insert into pm_scratch_card_history (sh_email,sh_digits,sh_cash,sh_date) values ('" + email
+				+ "','" + digits + "','" + cash + "','" + date + "')";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("insertScratchCardHistory inserted");
+		} catch (Exception e) {
+			System.out.println("insertScratchCardHistory: " + e.getMessage());
+		}
+	}
+
+	public static void insertUserHistory(String email, String date, String action) {
+		String sql = "insert into pm_user_history (uh_email,uh_date,uh_action) values ('" + email + "','" + date + "','"
+				+ action + "')";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("insertUserHistory inserted");
+		} catch (Exception e) {
+			System.out.println("insertUserHistory: " + e.getMessage());
+		}
+	}
+
+	public static void insertTransferHistory(String sender, String reciever, double cash, String date) {
+		String sql = "insert into pm_transfer_history (th_sender,th_reciever,th_cash,th_date) values ('" + sender
+				+ "','" + reciever + "','" + cash + "','" + date + "')";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("insertTransferHistory inserted");
+		} catch (Exception e) {
+			System.out.println("insertTransferHistory: " + e.getMessage());
 		}
 
 	}
@@ -476,6 +547,114 @@ public class DatabaseProcess {
 		}
 
 		return notification;
+	}
+
+	public static boolean isVerifyAccount(String token) {
+		boolean verify = false;
+		String sql = "select * from pm_user_token where ut_email='" + token + "'";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			if (resultSet.next()) {
+				verify = true;
+			}
+			connection.commit();
+			System.out.println("isVerifyAccount: " + verify);
+
+		} catch (Exception e) {
+			System.out.println("isVerifyAccount: " + e.getMessage());
+		}
+		return verify;
+	}
+
+	public static void insertUserToken(String email, String token) {
+		String sql = "insert into pm_user_token (ut_email,ut_token) values ('" + email + "','" + token + "')";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("insertUserToken inserted");
+		} catch (Exception e) {
+			System.out.println("insertUserToken: " + e.getMessage());
+		}
+	}
+
+	public static void updateAccountVerify(String email) {
+		String sql = "update pm_user set user_active=1 where user_email='" + email + "'";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("updateAccountVerify updated");
+		} catch (Exception e) {
+			System.out.println("updateAccountVerify: " + e.getMessage());
+		}
+	}
+
+	public static void insertScratchCard(String digits, double cash, String serial, String date) {
+		String sql = "insert into pm_scratch_card (sc_digits,sc_cash,sc_serial,sc_date,sc_used) values ('" + digits
+				+ "','" + cash + "','" + serial + "','" + date + "',0)";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("insertScratchCard inserted");
+		} catch (Exception e) {
+			System.out.println("insertScratchCard: " + e.getMessage());
+		}
+
+	}
+
+	public static void insertBussinessAccount(String email, String password, String url, String token) {
+		String sql = "insert into pm_business_account (ba_email,ba_password,ba_url,ba_token) values ('" + email + "','"
+				+ password + "','" + url + "','" + token + "')";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("insertBussinessAccount inserted");
+		} catch (Exception e) {
+			System.out.println("insertBussinessAccount: " + e.getMessage());
+		}
+
+	}
+
+	public static boolean isUser(String email, String password) {
+		boolean user = false;
+		String sql = "select * from pm_user where user_email='" + email + "' and user_password='" + password
+				+ "' and user_active=1";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			if (resultSet.next()) {
+				user = true;
+				System.out.println("isUser : " + user);
+			}
+			connection.commit();
+		} catch (Exception e) {
+			System.out.println("isUser : " + e.getMessage());
+		}
+		return user;
+	}
+
+	public static void disactiveAccount(String email) {
+		String sql = "update pm_user set user_active=0 where user_email='" + email + "'";
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement();
+			statement.execute(sql);
+			connection.commit();
+			System.out.println("Account disactive");
+		} catch (Exception e) {
+			System.out.println("disactiveAccount: " + e.getMessage());
+		}
+
 	}
 
 }

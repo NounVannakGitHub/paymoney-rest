@@ -2,6 +2,8 @@ package com.appsaradev.paymoney.account;
 
 import com.appsaradev.paymoney.account.auth.SignIn;
 import com.appsaradev.paymoney.account.auth.SignUp;
+import com.appsaradev.paymoney.account.history.History;
+import com.appsaradev.paymoney.account.notification.Notification;
 import com.appsaradev.paymoney.account.payment.Payment;
 import com.appsaradev.paymoney.account.topup.TopUp;
 import com.appsaradev.paymoney.account.transfer.Transfer;
@@ -63,5 +65,23 @@ public class Account {
 	private Transfer transfer;
 	private Payment payment;
 	private AccountSetting setting;
+	private History history;
+	public History getHistory() {
+		return history;
+	}
+
+	public Notification getNotification() {
+		return notification;
+	}
+
+	public void setHistory(History history) {
+		this.history = history;
+	}
+
+	public void setNotification(Notification notification) {
+		this.notification = notification;
+	}
+
+	private Notification notification;
 
 }

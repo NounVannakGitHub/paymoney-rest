@@ -14,9 +14,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import com.appsaradev.paymoney.account.Account;
+import com.appsaradev.paymoney.account.auth.SignIn;
 import com.appsaradev.paymoney.account.auth.SignUp;
 import com.appsaradev.paymoney.account.auth.Verify;
 import com.appsaradev.paymoney.account.dao.User;
+import com.appsaradev.paymoney.account.database.DatabaseProcess;
 import com.appsaradev.paymoney.account.utils.Utils;
 
 @Path("/")
@@ -54,8 +57,7 @@ public class PayMoneyResource {
 	@GET
 	@Path("/createuser/verify")
 	public Response verify(@QueryParam("token") String token) {
-		String email = Utils.decodedBase64(token);
-		System.out.println(email);
+		Verify.verifyAccount(token);
 		URI uri = UriBuilder.fromUri("/").build();
 		return Response.seeOther(uri).build();
 	}
@@ -63,13 +65,22 @@ public class PayMoneyResource {
 	@GET
 	@Path("/login")
 	public Response login(@QueryParam("signin-email") String email, @QueryParam("signin-password") String password) {
-		URI uri = UriBuilder.fromUri("/account" + email).build();
+		URI uri = null;
+		int count = 0;
+		if (SignIn.isLogin(email, password)) {
+			uri = UriBuilder.fromUri("/account?user=" + email).build();
+		} else {
+			count++;
+			if (count == 3) {
+				DatabaseProcess.disactiveAccount(email);
+			}
+		}
 		return Response.seeOther(uri).build();
 	}
 
 	@GET
-	@Path("/account/{user}")
-	public void account(@Context HttpServletRequest request, @PathParam("user") String email) {
+	@Path("/account")
+	public void account(@Context HttpServletRequest request, @QueryParam("user") String email) {
 
 	}
 

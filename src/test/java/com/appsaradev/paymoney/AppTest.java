@@ -8,6 +8,8 @@ import java.sql.Connection;
 import org.apache.commons.io.IOUtils;
 
 import com.appsaradev.paymoney.account.auth.Verify;
+import com.appsaradev.paymoney.account.topup.TopUp;
+import com.appsaradev.paymoney.admin.Admin;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -60,5 +62,9 @@ public class AppTest extends TestCase {
 	public void testReadContent() throws FileNotFoundException, IOException {
 		// System.out.println(IOUtils.toString(new
 		// FileReader("src/resources/assets/notice.html")));
+	}
+
+	public void testScratchCard() {
+		new TopUp().getScratchCard().topupScratchCard("85530672568663", "vn.appsaradev@gmail.com");
 	}
 }

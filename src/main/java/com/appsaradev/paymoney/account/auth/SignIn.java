@@ -15,9 +15,8 @@ public class SignIn {
 	}
 
 	public static boolean isLogin(String email, String password) {
-		return DatabaseProcess
-				.isCheck("select * from pm_user where user_email='" + email + "' and user_password='" + password + "'");
+		return DatabaseProcess.isUser(email, password);
 
 	}
- 
+
 }

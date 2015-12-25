@@ -12,10 +12,12 @@ com\appsaradev\paymoney\account\transfer\Transfer.class
 com\appsaradev\paymoney\account\dao\User.class
 com\appsaradev\paymoney\PayMoneyApplication.class
 com\appsaradev\paymoney\account\status\Status.class
+com\appsaradev\paymoney\admin\Admin.class
 com\appsaradev\paymoney\account\auth\Verify.class
 com\appsaradev\paymoney\account\utils\Utils.class
 com\appsaradev\paymoney\account\auth\SignIn.class
 com\appsaradev\paymoney\account\topup\TopUp.class
+com\appsaradev\paymoney\account\dao\MandatCashDao.class
 com\appsaradev\paymoney\account\AccountSetting.class
 com\appsaradev\paymoney\account\auth\API.class
 com\appsaradev\paymoney\account\Account.class

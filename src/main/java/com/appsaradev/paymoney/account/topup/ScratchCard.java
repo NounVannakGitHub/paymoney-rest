@@ -24,7 +24,6 @@ public class ScratchCard {
 
 	private static void updateCash(String email, double cash) {
 		double recieverCash = (doCheckCash(email) + cash);
-		updateCashUser(email, recieverCash);
 		History.setCashHistory(email, recieverCash, Utils.getCurrentTime());
 	}
 

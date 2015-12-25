@@ -167,4 +167,11 @@ public class User {
 		this.token = token;
 	}
 
+	public User(String email, String lname, String fname) {
+		this.email = email;
+		this.lname = lname;
+		this.fname = fname;
+
+	}
+
 }

@@ -7,6 +7,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.appsaradev.paymoney.account.database.DatabaseProcess;
+import com.appsaradev.paymoney.account.utils.Utils;
+
 public class Verify {
 
 	public static String doGenerateSecurityCode() {
@@ -65,6 +68,19 @@ public class Verify {
 		cookie2.setMaxAge(3600 * 24 * 30);
 		response.addCookie(cookie);
 		response.addCookie(cookie2);
+	}
+
+	private static boolean isVerifyAccount(String token) {
+		return DatabaseProcess.isVerifyAccount(Utils.decodedBase64(token));
+	}
+
+	public static void verifyAccount(String token) {
+		if (isVerifyAccount(token) == true) {
+			DatabaseProcess.updateAccountVerify(Utils.decodedBase64(token));
+		} else {
+			Utils.setError("verify error please check again");
+		}
+
 	}
 
 }
